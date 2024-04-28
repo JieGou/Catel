@@ -89,7 +89,7 @@
                 return;
             }
 
-            lock (_lock)
+            lock (Lock)
             {
                 if (_propertyValueChangeNotificationWrappers is null)
                 {

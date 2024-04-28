@@ -307,7 +307,7 @@
         {
             var token = new DisposableToken<ModelBase>(this, x =>
                 {
-                    lock (_lock)
+                    lock (Lock)
                     {
                         if (_validationSuspensionContext is null)
                         {
@@ -321,7 +321,7 @@
                 {
                     SuspensionContext? suspensionContext;
 
-                    lock (_lock)
+                    lock (Lock)
                     {
                         suspensionContext = _validationSuspensionContext;
                         if (suspensionContext is not null)

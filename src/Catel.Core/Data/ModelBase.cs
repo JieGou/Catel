@@ -19,15 +19,15 @@
         /// <summary>
         /// The property values.
         /// </summary>
-        internal IPropertyBag _propertyBag;
+        internal IPropertyBag PropertyBag;
 
         /// <summary>
         /// Lock object.
         /// </summary>
-        internal readonly object _lock = new object();
+        internal readonly object Lock = new object();
 
-        internal SuspensionContext? _changeCallbacksSuspensionContext;
-        internal SuspensionContext? _changeNotificationsSuspensionContext;
+        internal SuspensionContext? ChangeCallbacksSuspensionContext;
+        internal SuspensionContext? ChangeNotificationsSuspensionContext;
 
         /// <summary>
         /// Initializes static members of the <see cref="ModelBase"/> class.
@@ -42,7 +42,7 @@
         /// </summary>
         protected ModelBase()
         {
-            _propertyBag = CreatePropertyBag();
+            PropertyBag = CreatePropertyBag();
 
             Initialize();
         }
@@ -183,28 +183,28 @@
         {
             var token = new DisposableToken<ModelBase>(this, x =>
             {
-                lock (_lock)
+                lock (Lock)
                 {
-                    if (_changeCallbacksSuspensionContext is null)
+                    if (ChangeCallbacksSuspensionContext is null)
                     {
-                        _changeCallbacksSuspensionContext = new SuspensionContext();
+                        ChangeCallbacksSuspensionContext = new SuspensionContext();
                     }
 
-                    _changeCallbacksSuspensionContext.Increment();
+                    ChangeCallbacksSuspensionContext.Increment();
                 }
             },
             x =>
             {
-                lock (_lock)
+                lock (Lock)
                 {
-                    var suspensionContext = _changeCallbacksSuspensionContext;
+                    var suspensionContext = ChangeCallbacksSuspensionContext;
                     if (suspensionContext is not null)
                     {
                         suspensionContext.Decrement();
 
                         if (suspensionContext.Counter == 0)
                         {
-                            _changeCallbacksSuspensionContext = null;
+                            ChangeCallbacksSuspensionContext = null;
                         }
                     }
                 }
@@ -224,30 +224,30 @@
         {
             var token = new DisposableToken<ModelBase>(this, x =>
             {
-                lock (_lock)
+                lock (Lock)
                 {
-                    if (_changeNotificationsSuspensionContext is null)
+                    if (ChangeNotificationsSuspensionContext is null)
                     {
-                        _changeNotificationsSuspensionContext = new SuspensionContext();
+                        ChangeNotificationsSuspensionContext = new SuspensionContext();
                     }
 
-                    _changeNotificationsSuspensionContext.Increment();
+                    ChangeNotificationsSuspensionContext.Increment();
                 }
             },
             x =>
             {
                 SuspensionContext? suspensionContext;
 
-                lock (_lock)
+                lock (Lock)
                 {
-                    suspensionContext = _changeNotificationsSuspensionContext;
+                    suspensionContext = ChangeNotificationsSuspensionContext;
                     if (suspensionContext is not null)
                     {
                         suspensionContext.Decrement();
 
                         if (suspensionContext.Counter == 0)
                         {
-                            _changeNotificationsSuspensionContext = null;
+                            ChangeNotificationsSuspensionContext = null;
                         }
                     }
                 }
@@ -363,9 +363,9 @@
                 {
                     SuspensionContext? callbackSuspensionContext;
 
-                    lock (_lock)
+                    lock (Lock)
                     {
-                        callbackSuspensionContext = _changeCallbacksSuspensionContext;
+                        callbackSuspensionContext = ChangeCallbacksSuspensionContext;
                     }
 
                     if (callbackSuspensionContext is not null)

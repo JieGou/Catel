@@ -94,9 +94,9 @@
                 return false;
             }
 
-            lock (x._lock)
+            lock (x.Lock)
             {
-                foreach (var propertyValue in x._propertyBag.GetAllProperties())
+                foreach (var propertyValue in x.PropertyBag.GetAllProperties())
                 {
                     var propertyData = PropertyDataManager.GetPropertyData(xType, propertyValue.Key);
 

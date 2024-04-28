@@ -319,9 +319,9 @@
                 PropertyDataManager.RegisterProperty(objectType, propertyName, propertyData);
             }
 
-            lock (_lock)
+            lock (Lock)
             {
-                if (!_propertyBag.IsAvailable(propertyName))
+                if (!PropertyBag.IsAvailable(propertyName))
                 {
                     SetDefaultValueToPropertyBag(propertyData);
                 }

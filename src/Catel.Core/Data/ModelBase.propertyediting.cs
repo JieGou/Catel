@@ -91,9 +91,9 @@
             var notify = false;
             TValue oldValue;
 
-            lock (_lock)
+            lock (Lock)
             {
-                var changeNotificationsSuspensionContext = _changeNotificationsSuspensionContext;
+                var changeNotificationsSuspensionContext = ChangeNotificationsSuspensionContext;
 
                 oldValue = GetValueFromPropertyBag<TValue>(property.Name);
                 var areOldAndNewValuesEqual = ObjectHelper.AreEqual(oldValue, value);
@@ -130,9 +130,9 @@
         /// <param name="value">The value.</param>
         protected virtual void SetValueToPropertyBag<TValue>(string propertyName, TValue value)
         {
-            lock (_lock)
+            lock (Lock)
             {
-                _propertyBag.SetValue(propertyName, value);
+                PropertyBag.SetValue(propertyName, value);
             }
         }
 
@@ -147,9 +147,9 @@
         /// <returns>The value of the property.</returns>
         protected virtual T GetValueFromPropertyBag<T>(string propertyName)
         {
-            lock (_lock)
+            lock (Lock)
             {
-                return _propertyBag.GetValue<T>(propertyName);
+                return PropertyBag.GetValue<T>(propertyName);
             }
         }
 
